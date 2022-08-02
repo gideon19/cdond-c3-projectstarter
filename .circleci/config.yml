@@ -214,7 +214,7 @@ jobs:
       # Here's where you will add some code to rollback on failure      
 
   configure-infrastructure:
-     docker:
+    docker:
       - image: cimg/base:stable
     steps:
        - checkout
