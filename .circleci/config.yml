@@ -224,8 +224,8 @@ jobs:
            - "37:64:1d:e6:21:19:ed:06:4f:ec:9e:57:27:90:55:ba"
        - attach_workspace:
            at: ~/
-      
-      - install_ansible
+       
+       - install_ansible
 
       - run:
           name: Configure server
@@ -234,9 +234,7 @@ jobs:
             cat inventory.txt
 
             ansible-playbook -i inventory.txt configure-server.yml
-
-      # Here's where you will add some code to rollback on failure      
-    - destroy-enviroment
+      - destroy-enviroment
 
   run-migrations:
     docker:
@@ -374,10 +372,10 @@ workflows:
           filters:
             branches:
               only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
       # - deploy-backend:
