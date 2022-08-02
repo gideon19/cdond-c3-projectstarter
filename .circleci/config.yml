@@ -1,6 +1,17 @@
 version: 2.1
 
 commands:
+  install_ansible:
+    description: Install ansible
+    steps:
+      - run:
+          name: Install ansible
+          command: |
+            sudo apt update
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository --yes --update ppa:ansible/ansibe
+            sudo apt install ansible -y
+
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -204,23 +215,29 @@ jobs:
 
   configure-infrastructure:
     docker:
-      # Docker image here that supports Ansible
+      - image: cimg/base:stable
     steps:
-      # Checkout code from git
-      # Add ssh keys with fingerprint
-      # attach workspace
-      - run:
-          name: Install dependencies
-          command: |
-            # Your code here
-            exit 1
+       - checkout
+       # Add ssh keys with fingerprint
+       - add_ssh_keys:
+           fingerprints:
+           - "37:64:1d:e6:21:19:ed:06:4f:ec:9e:57:27:90:55:ba"
+       - attach_workspace:
+           at: ~/
+      
+      - install_ansible
+
       - run:
           name: Configure server
           command: |
-            # Your code here
-            exit 1
-      # Here's where you will add some code to rollback on failure      
+            cd .circleci/ansible
+            cat inventory.txt
 
+            ansible-playbook -i inventory.txt configure-server.yml
+
+      # Here's where you will add some code to rollback on failure      
+      - destroy-enviroment
+      
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
