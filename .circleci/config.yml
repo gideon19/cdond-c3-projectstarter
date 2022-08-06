@@ -1,17 +1,6 @@
 version: 2.1
 
 commands:
-  install_ansible:
-    description: Install ansible
-    steps:
-      - run:
-          name: Install ansible
-          command: |
-            sudo apt update
-            sudo apt install software-properties-common -y
-            sudo -E add-apt-repository --yes --update ppa:ansible/ansibe
-            sudo apt install ansible -y
-
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -224,8 +213,7 @@ jobs:
            - "37:64:1d:e6:21:19:ed:06:4f:ec:9e:57:27:90:55:ba"
        - attach_workspace:
            at: ~/
-       
-       - install_ansible
+
 
        - run:
           name: Configure server
