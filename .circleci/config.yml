@@ -1,6 +1,17 @@
 version: 2.1
 
 commands:
+  install_ansible:
+    description: Install ansible
+    steps:
+      - run:
+          name: Install ansible
+          command: |
+            sudo apt update
+            sudo apt install software-properties-common -y
+            sudo -E add-apt-repository --yes --update ppa:ansible/ansibe
+            sudo apt install ansible -y
+
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -8,7 +19,6 @@ commands:
       workflow_id:
         default: "${CIRCLE_WORKFLOW_ID:0:7}"
         type: string
-
     steps:
       - run:
           name: Destroy environments
@@ -223,7 +233,8 @@ jobs:
 
             ansible-playbook -i inventory.txt configure-server.yml
 
-       - destroy-environment
+       - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   run-migrations:
     docker:
